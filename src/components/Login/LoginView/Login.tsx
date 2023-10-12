@@ -3,11 +3,9 @@ import LoginView from '.';
 import LoginInput from '../Logininput';
 import Logoimg from '../../../images/Logo.png'
 import { useState } from 'react';
+import axios from "axios";
 
-const User = {
-    email: 'lsh@gmail.com',
-    pw: '1234'
-};
+
 
 function Login() {
 
@@ -22,23 +20,33 @@ function Login() {
         setPw(e.target.value)
     }
 
-    const correctConfirm = () => {
-        if(email===User.email && pw===User.pw) {
+
+    const clicked = async () => {
+        try {
+          const response = await axios.get('http://127.0.0.1:8000/dbpractice/get_user_email/');
+          const userEmails = response.data.user_email;
+          const userPw = response.data.user_pw;
+          console.log(userEmails); 
+          console.log(userPw);// Do something with the data
+          if(email==userEmails && pw==userPw) {
             alert('로그인에 성공했습니다.')
         } else {
             alert('등록되지 않은 회원입니다.')
         }
-    }
+        } catch (error) {
+          console.error('Error fetching user emails:', error);
+        }
+      };
 
     return (
         
           <LoginView>
               <img src={Logoimg}></img>
-              <LoginInput type='id' placeholder='Usuário' value={email}
+              <LoginInput type='id' placeholder='Usuário'
                 onChange={idInput}></LoginInput>
-              <LoginInput type='password' placeholder='Senha' value={pw}
+              <LoginInput type='password' placeholder='Senha'
                 onChange={pwInput}></LoginInput>
-              <MyButton label='ENTRAR' Color='white' BgColor='black' onClick={correctConfirm}/>
+              <MyButton label='ENTRAR' Color='white' BgColor='black' onClick={clicked}/>
               
           </LoginView>
         
